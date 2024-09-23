@@ -1,36 +1,59 @@
 package com.college.service;
 
-
 import com.college.model.Student;
-import com.college.repository.StudentRepository;
-import lombok.extern.slf4j.Slf4j;
+import com.college.repository.StudentRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-@Slf4j
 public class StudentService {
 
-   @Autowired
-   private StudentRepository studentRepository;
+    @Autowired
+    private StudentRepo studentRepo;
 
-    public List<Student> getAllStudents() {
-        return studentRepository.findAll();
+    public List<Student> getAllStudents(){
+        return studentRepo.findAll();
     }
 
-    public Optional<Student> getStudentById(Integer id) {
-        return studentRepository.findById(id);
+    public Optional<Student> getStudentById(Integer id){
+        return studentRepo.findById(id);
     }
 
-    public Student saveStudent(Student student) {
-        return studentRepository.save(student);
+    public Student getStudentByName(String name){
+        return studentRepo.findByName(name);
     }
 
-    public void deleteStudent(Integer id) {
-        studentRepository.deleteById(id);
+    public Student addStudent(Student student){
+        return studentRepo.save(student);
+    }
+
+    public Student updateStudent(Integer id, Student updatedStudent){
+        Student existingStu= studentRepo.findById(id).orElseThrow();
+
+        existingStu.setId(updatedStudent.getId());
+        existingStu.setName(updatedStudent.getName());
+        existingStu.setEmail(updatedStudent.getEmail());
+        existingStu.setMarks(updatedStudent.getMarks());
+        return studentRepo.save(existingStu);
+    }
+
+    public  void deleteStudentById(Integer id){
+        studentRepo.deleteById(id);
+    }
+
+    public void  deleteStudentByName(String name){
+         studentRepo.deleteByName(name);
+    }
+
+    public List<Student> addManyStudent(List<Student> students) {
+        return studentRepo.saveAll(students);
+//        List<Student> response = new ArrayList<>();
+//        for (Student student : students ){
+//            Student student1 = studentRepo.save(student);
+//        }
     }
 }
